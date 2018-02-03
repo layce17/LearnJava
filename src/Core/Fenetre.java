@@ -5,7 +5,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,11 +20,12 @@ public class Fenetre extends JFrame{
   private JButton bouton = new JButton("Go");
   private JButton bouton2 = new JButton("Stop");
   private JPanel container = new JPanel();
-  private JLabel label = new JLabel("Le JLabel");
+  private JLabel label = new JLabel("Forme: ");
   private boolean animated = true;
   private boolean backX, backY;
   private int x, y;
   private Thread t;
+  private JComboBox<String> combo = new JComboBox<String>();
 
   public Fenetre(){
     this.setTitle("Animation");
@@ -35,6 +40,17 @@ public class Fenetre extends JFrame{
     bouton.setEnabled(false);
     bouton2.addActionListener(new Bouton2Listener());
 
+    combo.addItem("ROND");
+    combo.addItem("CARRE");
+    combo.addItem("TRIANGLE");
+    combo.addItem("ETOILE");
+    combo.addItemListener(new FormeListener());
+    
+    JPanel top = new JPanel();
+    top.add(label);
+    top.add(combo);
+    container.add(top, BorderLayout.NORTH);
+    
     JPanel south = new JPanel();
     south.add(bouton);
     south.add(bouton2);
@@ -43,7 +59,6 @@ public class Fenetre extends JFrame{
     label.setFont(police);
     label.setForeground(Color.blue);
     label.setHorizontalAlignment(JLabel.CENTER);
-    container.add(label, BorderLayout.NORTH);
     this.setContentPane(container);
     this.setVisible(true);
     go();
@@ -96,5 +111,14 @@ public class Fenetre extends JFrame{
     public void run() {
       go();                   
     }               
-  }       
+  } 
+  
+  class FormeListener implements ItemListener{
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED)
+			pan.setForme(combo.getSelectedItem().toString());
+	}
+  }
 }
